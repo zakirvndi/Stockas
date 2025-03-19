@@ -1,0 +1,6 @@
+@Stockas_HostAddress = http://localhost:5192
+
+GET {{Stockas_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
