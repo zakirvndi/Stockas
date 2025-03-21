@@ -15,4 +15,13 @@
     <ProjectReference Include="..\Stockas.Entities\Stockas.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Behaviors\" />
+    <Folder Include="Application\Commands\" />
+    <Folder Include="Application\Validators\" />
+    <Folder Include="Application\Queries\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Models\DTOS\" />
+  </ItemGroup>
+
 </Project>
