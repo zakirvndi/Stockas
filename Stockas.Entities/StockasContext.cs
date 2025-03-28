@@ -111,6 +111,11 @@ public partial class StockasContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.RefreshToken)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.RefreshTokenExpiry)
+                .HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

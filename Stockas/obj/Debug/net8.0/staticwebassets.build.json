@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "fFtu0plpwWFe5jGZbvuJkDCWDXAgSt4EHCw0cDNyjuM=",
+  "Hash": "XStIjQnUHbsRhWa/Orjp1MNxlpRcctBDMJXYGmKEoLg=",
   "Source": "Stockas",
   "BasePath": "_content/Stockas",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }

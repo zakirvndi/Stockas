@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Stockas.Entities")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8581bbce0327fa8a26debbb84c0519d5515752d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Stockas.Entities")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Stockas.Entities")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
