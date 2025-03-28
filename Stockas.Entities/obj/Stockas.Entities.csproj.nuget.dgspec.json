@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ZAKI\\Documents\\BINUS\\Accelist\\Training\\Final Project\\Final Project Backend\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj": {}
+    "C:\\Users\\andry\\Downloads\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ZAKI\\Documents\\BINUS\\Accelist\\Training\\Final Project\\Final Project Backend\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj": {
+    "C:\\Users\\andry\\Downloads\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ZAKI\\Documents\\BINUS\\Accelist\\Training\\Final Project\\Final Project Backend\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj",
+        "projectUniqueName": "C:\\Users\\andry\\Downloads\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj",
         "projectName": "Stockas.Entities",
-        "projectPath": "C:\\Users\\ZAKI\\Documents\\BINUS\\Accelist\\Training\\Final Project\\Final Project Backend\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj",
-        "packagesPath": "C:\\Users\\ZAKI\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ZAKI\\Documents\\BINUS\\Accelist\\Training\\Final Project\\Final Project Backend\\Stockas\\Stockas.Entities\\obj\\",
+        "projectPath": "C:\\Users\\andry\\Downloads\\Stockas\\Stockas.Entities\\Stockas.Entities.csproj",
+        "packagesPath": "C:\\Users\\andry\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\andry\\Downloads\\Stockas\\Stockas.Entities\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ZAKI\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\andry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -43,8 +43,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -77,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
