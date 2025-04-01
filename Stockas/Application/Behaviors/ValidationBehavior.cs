@@ -2,6 +2,8 @@
 using FluentValidation.Results;
 using MediatR;
 
+namespace Stockas.Application.Behaviors;
+
 public class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
@@ -16,20 +18,22 @@ public class ValidationBehavior<TRequest, TResponse>(
             return await next();
 
         var context = new ValidationContext<TRequest>(request);
-        var failures = new List<ValidationFailure>();
 
         var uniqueValidators = validators
             .GroupBy(v => v.GetType())
             .Select(g => g.First())
             .ToList();
 
-        foreach (var validator in uniqueValidators)
-        {
-            var result = await validator.ValidateAsync(context, cancellationToken);
-            failures.AddRange(result.Errors);
-        }
+        var validationTasks = uniqueValidators.Select(v => v.ValidateAsync(context, cancellationToken));
+        var validationResults = await Task.WhenAll(validationTasks);
 
-        if (failures.Count != 0)
+
+        var failures = validationResults
+            .SelectMany(result => result.Errors)
+            .Where(f => f != null)
+            .ToList();
+
+        if (failures.Any())
             throw new ValidationException(failures);
 
         return await next();

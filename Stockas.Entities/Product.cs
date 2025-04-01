@@ -19,7 +19,11 @@ public partial class Product
 
     public DateOnly InputDate { get; set; }
 
+    public int UserId { get; set; }
+
     public virtual ProductCategory Category { get; set; } = null!;
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    public virtual User User { get; set; } = null!;
 }

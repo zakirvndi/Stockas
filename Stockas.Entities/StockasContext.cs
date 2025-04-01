@@ -32,7 +32,6 @@ public partial class StockasContext : DbContext
             optionsBuilder.UseSqlServer("Server=tcp:stockas.database.windows.net,1433;Database=stockas;User ID=GroupAdmin7;Password=Group_Admin07;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
     }
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,6 +48,11 @@ public partial class StockasContext : DbContext
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_ProductCategory");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Products)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Products_Users");
         });
 
         modelBuilder.Entity<ProductCategory>(entity =>
@@ -80,6 +84,11 @@ public partial class StockasContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK_Transactions_Product");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Transactions_Users");
         });
 
         modelBuilder.Entity<TransactionCategory>(entity =>
@@ -114,8 +123,7 @@ public partial class StockasContext : DbContext
             entity.Property(e => e.RefreshToken)
                 .HasMaxLength(500)
                 .IsUnicode(false);
-            entity.Property(e => e.RefreshTokenExpiry)
-                .HasColumnType("datetime");
+            entity.Property(e => e.RefreshTokenExpiry).HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);
