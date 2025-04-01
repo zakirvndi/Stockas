@@ -16,4 +16,8 @@ public partial class User
     public string? RefreshToken { get; set; }
 
     public DateTime? RefreshTokenExpiry { get; set; }
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

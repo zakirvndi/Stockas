@@ -17,7 +17,11 @@ public partial class Transaction
 
     public DateTime TransactionDate { get; set; }
 
+    public int UserId { get; set; }
+
     public virtual TransactionCategory Category { get; set; } = null!;
 
     public virtual Product? Product { get; set; }
+
+    public virtual User User { get; set; } = null!;
 }
