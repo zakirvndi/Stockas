@@ -52,6 +52,9 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(ProductCategoryDto).Assembly);
 
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 // Pipeline Behaviors
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 

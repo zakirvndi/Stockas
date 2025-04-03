@@ -36,16 +36,16 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
-        _logger.LogInformation("Login attempt for email: {Email}", dto.Email);
+        _logger.LogInformation("Login endpoint called");
         try
         {
             var result = await _mediator.Send(new LoginUserCommand(dto));
-            _logger.LogInformation("Successful login for user ID: {UserId}", result.User.UserId);
+            _logger.LogInformation("Login endpoint completed successfully");
             return Ok(new { result.Token, result.User });
         }
         catch (Exception ex)
         {
-            _logger.LogInformation("Failed login attempt for email: {Email}", dto.Email);
+            _logger.LogError(ex, "Login endpoint error");
             throw;
         }
     }
@@ -102,27 +102,18 @@ public class AuthController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Logout()
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        _logger.LogInformation("Logout attempt for user ID: {UserId}", userId);
-
-        var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        if (string.IsNullOrEmpty(token))
+        _logger.LogInformation("Logout endpoint called");
+        try
         {
-            _logger.LogInformation("No token provided for logout");
-            return BadRequest("No token provided");
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            await _mediator.Send(new LogoutCommand(userId));
+            _logger.LogInformation("Logout endpoint completed successfully");
+            return Ok(new { Message = "Logged out successfully" });
         }
-
-        await _tokenBlacklistService.BlacklistTokenAsync(token, TimeSpan.FromHours(1));
-
-        var user = await _context.Users.FindAsync(userId);
-        if (user != null)
+        catch (Exception ex)
         {
-            user.RefreshToken = null;
-            user.RefreshTokenExpiry = null;
-            await _context.SaveChangesAsync();
+            _logger.LogError(ex, "Logout endpoint error");
+            throw;
         }
-
-        _logger.LogInformation("Successful logout for user ID: {UserId}", userId);
-        return Ok(new { Message = "Logged out successfully" });
     }
 }

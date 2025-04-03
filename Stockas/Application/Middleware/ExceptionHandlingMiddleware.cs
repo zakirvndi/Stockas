@@ -45,14 +45,14 @@ public class ExceptionHandlingMiddleware
 
         var response = new
         {
-            Type = $"https://yourapi.com/errors/{context.Response.StatusCode}",
+            Type = $"http://localhost:5192/errors/{context.Response.StatusCode}",
             Title = exception switch
             {
                 ValidationException => "Validation Error",
                 UnauthorizedAccessException => "Unauthorized",
                 KeyNotFoundException => "Not Found",
                 ArgumentException => "Bad Request",
-                _ => "Internal Server Error"
+                _ => "Internal Server Error",
             },
             Status = context.Response.StatusCode,
             Detail = exception.Message,
