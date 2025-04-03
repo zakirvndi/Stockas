@@ -20,4 +20,8 @@ public partial class User
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    public virtual ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
+
+    public virtual ICollection<TransactionCategory> TransactionCategories { get; set; } = new List<TransactionCategory>();
 }

@@ -103,6 +103,14 @@ public partial class StockasContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.TransactionCategories)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => new { e.UserId, e.CategoryName })
+                .IsUnique();
         });
 
         modelBuilder.Entity<User>(entity =>
