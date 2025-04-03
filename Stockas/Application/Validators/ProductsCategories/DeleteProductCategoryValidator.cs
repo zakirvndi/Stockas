@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Stockas.Application.Commands;
 
 public class DeleteProductCategoryValidator : AbstractValidator<DeleteProductCategoryCommand>
 {

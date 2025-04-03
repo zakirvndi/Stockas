@@ -9,5 +9,9 @@ public partial class ProductCategory
 
     public string CategoryName { get; set; } = null!;
 
+    public int UserId { get; set; }
+
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
+    public virtual User User { get; set; } = null!;
 }

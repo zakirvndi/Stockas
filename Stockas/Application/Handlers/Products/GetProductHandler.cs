@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Stockas.Application.Queries;
 using Stockas.Entities;
 using Stockas.Models.DTOS;
 
@@ -18,8 +19,9 @@ public class GetProductHandler : IRequestHandler<GetProductsQuery, IEnumerable<P
     public async Task<IEnumerable<ProductDTO>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var query = _context.Products
-            .Include(p => p.Category)
-            .AsQueryable();
+         .Include(p => p.Category)
+         .Where(p => p.UserId == request.UserId) 
+         .AsQueryable();
 
         query = request.OrderBy?.ToLower() switch
         {

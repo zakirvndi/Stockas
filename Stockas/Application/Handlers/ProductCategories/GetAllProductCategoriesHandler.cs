@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Stockas.Application.Queries;
 using Stockas.Entities;
-using Stockas.Handlers.Queries;
 using Stockas.Models.DTOS;
 
 public class GetAllProductCategoriesQueryHandler : IRequestHandler<GetAllProductCategoriesQuery, List<ProductCategoryDto>>
@@ -18,13 +18,16 @@ public class GetAllProductCategoriesQueryHandler : IRequestHandler<GetAllProduct
 
     public async Task<List<ProductCategoryDto>> Handle(GetAllProductCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var categories = await _context.ProductCategories.ToListAsync(cancellationToken);
+        var categories = await _context.ProductCategories
+            .Where(c => c.UserId == request.UserId) 
+            .ToListAsync(cancellationToken);
 
-        if (categories == null || !categories.Any()) 
+        if (categories == null || !categories.Any())
         {
-            throw new KeyNotFoundException("No product categories found.");
+            throw new KeyNotFoundException("No product categories found for this user.");
         }
 
         return _mapper.Map<List<ProductCategoryDto>>(categories);
     }
+
 }

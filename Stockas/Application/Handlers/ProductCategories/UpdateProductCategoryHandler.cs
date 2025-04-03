@@ -21,19 +21,21 @@ namespace Stockas.Application.Handlers
         public async Task<ProductCategoryDto> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = await _context.ProductCategories
-                .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId, cancellationToken);
+                .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId && c.UserId == request.UserId, cancellationToken);
 
             if (category == null)
             {
-                throw new KeyNotFoundException($"Product Category with ID {request.CategoryId} not found.");
+                throw new KeyNotFoundException($"Product Category with ID {request.CategoryId} not found or does not belong to this user.");
             }
 
             var existingCategory = await _context.ProductCategories
-                .AnyAsync(c => c.CategoryName.ToLower() == request.CategoryName.ToLower() && c.CategoryId != request.CategoryId, cancellationToken);
+                .AnyAsync(c => c.CategoryName.ToLower() == request.CategoryName.ToLower()
+                            && c.CategoryId != request.CategoryId
+                            && c.UserId == request.UserId, cancellationToken); 
 
             if (existingCategory)
             {
-                throw new ArgumentException("Category name must be unique.");
+                throw new ArgumentException("Category name must be unique for this user.");
             }
 
             category.CategoryName = request.CategoryName;
@@ -42,6 +44,7 @@ namespace Stockas.Application.Handlers
 
             return _mapper.Map<ProductCategoryDto>(category);
         }
+
 
     }
 }

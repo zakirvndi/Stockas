@@ -1,11 +1,18 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 
-public class DeleteProductCategoryCommand : IRequest<Unit>
+namespace Stockas.Application.Commands
 {
-    public int CategoryId { get; set; }
-
-    public DeleteProductCategoryCommand(int categoryId)
+    public class DeleteProductCategoryCommand : IRequest<Unit>
     {
-        CategoryId = categoryId;
+        public int CategoryId { get; set; }
+        [JsonIgnore]
+        public int UserId { get; set; } 
+
+        public DeleteProductCategoryCommand(int categoryId, int userId)
+        {
+            CategoryId = categoryId;
+        }
     }
+
 }

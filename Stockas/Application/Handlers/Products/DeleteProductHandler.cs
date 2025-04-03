@@ -16,25 +16,22 @@ public class DeleteProductHandler : IRequestHandler<DeleteProductCommand>
     }
 
     public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
-    {
-        // Cek apakah produk ada
-        var product = await _context.Products.FindAsync(request.ProductId);
-        if (product == null)
-        {
-            throw new KeyNotFoundException("Product not found.");
-        }
+{
+    var product = await _context.Products.FindAsync(request.ProductId);
+    if (product == null)
+        throw new KeyNotFoundException("Product not found.");
 
-        // Cek apakah produk ini sudah ada di transaksi
-        bool isUsedInTransactions = await _context.Transactions.AnyAsync(t => t.ProductId == request.ProductId);
-        if (isUsedInTransactions)
-        {
-            throw new InvalidOperationException("Product is referenced in transactions and cannot be deleted.");
-        }
+    if (product.UserId != request.UserId)
+        throw new UnauthorizedAccessException("You are not authorized to delete this product.");
 
-        
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync(cancellationToken);
+    bool isUsedInTransactions = await _context.Transactions.AnyAsync(t => t.ProductId == request.ProductId);
+    if (isUsedInTransactions)
+        throw new InvalidOperationException("Product is referenced in transactions and cannot be deleted.");
 
-        _logger.LogInformation("Product {ProductId} deleted by user {UserId}", request.ProductId, request.UserId);
-    }
+    _context.Products.Remove(product);
+    await _context.SaveChangesAsync(cancellationToken);
+
+    _logger.LogInformation("Product {ProductId} deleted by user {UserId}", request.ProductId, request.UserId);
+}
+
 }
