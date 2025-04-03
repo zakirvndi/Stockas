@@ -64,6 +64,11 @@ public partial class StockasContext : DbContext
             entity.Property(e => e.CategoryName)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.User).WithMany(p => p.ProductCategories)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductCategory_Users");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
@@ -104,13 +109,10 @@ public partial class StockasContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
 
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.TransactionCategories)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.UserId, e.CategoryName })
-                .IsUnique();
+            entity.HasOne(d => d.User).WithMany(p => p.TransactionCategories)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TransactionCategory_Users");
         });
 
         modelBuilder.Entity<User>(entity =>
