@@ -21,7 +21,7 @@ namespace Stockas.Application.Handlers
 
         public async Task<ProductCategoryDto> Handle(CreateProductCategoryCommand request, CancellationToken cancellationToken)
         {
-            // Cek apakah kategori dengan nama yang sama sudah ada untuk user yang sama
+            
             var existingCategory = await _context.ProductCategories
                 .AnyAsync(c => c.CategoryName.ToLower() == request.CategoryName.ToLower() && c.UserId == request.UserId, cancellationToken);
 

@@ -13,6 +13,8 @@ using Stockas.Entities;
 using Stockas.Models.DTOS;
 using System.Reflection;
 using System.Text;
+using StackExchange.Redis;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -113,11 +115,15 @@ app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stockas API V1");
+        c.RoutePrefix = string.Empty; 
+    });
+//}
 
 // Middleware Authentication & Authorization
 app.UseAuthentication();
