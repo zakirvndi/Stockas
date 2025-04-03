@@ -15,6 +15,7 @@ public class TokenService : ITokenService
     private readonly string _audience;
     private readonly ITokenBlacklistService _tokenBlacklistService;
     private readonly ILogger<TokenService> _logger;
+    private readonly SymmetricSecurityKey _securityKey;
 
     public TokenService(
         string key,
@@ -28,26 +29,27 @@ public class TokenService : ITokenService
         _audience = audience;
         _tokenBlacklistService = tokenBlacklistService;
         _logger = logger;
+        _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
     }
 
-    
     public string GenerateToken(User user)
     {
         _logger.LogInformation("Generating token for user ID: {UserId}", user.UserId);
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var credentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Name, user.Name),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
-        };
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, user.Name),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
         var token = new JwtSecurityToken(
-            issuer: _issuer, 
-            audience: _audience,  
+            issuer: _issuer,
+            audience: _audience,
             claims: claims,
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: credentials
@@ -58,7 +60,6 @@ public class TokenService : ITokenService
 
     public string GenerateRefreshToken()
     {
-
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
@@ -70,10 +71,11 @@ public class TokenService : ITokenService
         return await _tokenBlacklistService.IsTokenBlacklistedAsync(token);
     }
 
-    public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    public async Task<ClaimsPrincipal> GetPrincipalFromExpiredTokenAsync(string token)
     {
         _logger.LogInformation("Validating expired token");
-        if (_tokenBlacklistService.IsTokenBlacklistedAsync(token).GetAwaiter().GetResult())
+
+        if (await _tokenBlacklistService.IsTokenBlacklistedAsync(token))
         {
             throw new SecurityTokenException("Token has been revoked");
         }
@@ -85,20 +87,59 @@ public class TokenService : ITokenService
             ValidIssuer = _issuer,
             ValidAudience = _audience,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key)),
+            IssuerSigningKey = _securityKey,
             ValidateLifetime = false,
-            ClockSkew = TimeSpan.FromMinutes(1)
+            ClockSkew = TimeSpan.Zero
         };
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-
-        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        try
         {
-            throw new SecurityTokenException("Invalid token");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            return principal;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Token validation failed");
+            throw new SecurityTokenException("Token validation failed", ex);
+        }
+    }
+
+    public async Task<bool> ValidateTokenAsync(string token)
+    {
+        if (await _tokenBlacklistService.IsTokenBlacklistedAsync(token))
+        {
+            return false;
         }
 
-        return principal;
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidIssuer = _issuer,
+            ValidAudience = _audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = _securityKey,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

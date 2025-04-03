@@ -107,6 +107,8 @@ builder.Services.AddSingleton<ITokenService>(provider =>
 
 var app = builder.Build();
 
+app.UseMiddleware<TokenBlacklistMiddleware>();
+
 // Middleware Global Error Handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
