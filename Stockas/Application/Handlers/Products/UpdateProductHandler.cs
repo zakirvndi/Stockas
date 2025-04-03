@@ -19,7 +19,9 @@ public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, Produc
 
     public async Task<ProductDTO> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await _context.Products.FindAsync(request.ProductId);
+        var product = await _context.Products
+        .Include(p => p.Category) 
+        .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
         if (product == null)
             throw new KeyNotFoundException("Product not found.");
 
