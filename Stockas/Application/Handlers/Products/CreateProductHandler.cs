@@ -19,9 +19,9 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Produc
     {
         try
         {
-            bool isExist = await _context.Products.AnyAsync(p => p.ProductName == request.ProductName, cancellationToken);
+            bool isExist = await _context.Products.AnyAsync(p => p.ProductName == request.ProductName && p.UserId == request.UserId, cancellationToken);
             if (isExist)
-                throw new Exception("Product with the same name already exists.");
+                throw new Exception("You already have a product with the same name.");
 
             var product = _mapper.Map<Product>(request);
             product.UserId = request.UserId; 
@@ -30,20 +30,14 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Produc
             await _context.SaveChangesAsync(cancellationToken);
 
             var productWithCategory = await _context.Products
-           .Include(p => p.Category)
-           .FirstOrDefaultAsync(p => p.ProductId == product.ProductId, cancellationToken);
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.ProductId == product.ProductId, cancellationToken);
 
             return _mapper.Map<ProductDTO>(product);
-        }
-        catch (DbUpdateException dbEx)
-        {
-            throw new Exception($"Database error: {dbEx.InnerException?.Message}", dbEx);
         }
         catch (Exception ex)
         {
             throw new Exception($"Unexpected error: {ex.Message}", ex);
         }
     }
-
-
 }

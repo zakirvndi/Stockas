@@ -2,14 +2,20 @@
 using MediatR;
 using Stockas.Models.DTOS;
 
-public class UpdateProductCategoryCommand : IRequest<ProductCategoryDto>
+namespace Stockas.Application.Commands
 {
-    [JsonIgnore]
-    public int CategoryId { get; set; }
-    public string CategoryName { get; set; }
-
-    public UpdateProductCategoryCommand(string categoryName)
+    public class UpdateProductCategoryCommand : IRequest<ProductCategoryDto>
     {
-        CategoryName = categoryName;
+        [JsonIgnore]
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        [JsonIgnore]
+        public int UserId { get; set; } 
+
+        public UpdateProductCategoryCommand(string categoryName, int userId)
+        {
+            CategoryName = categoryName;
+        }
     }
+
 }

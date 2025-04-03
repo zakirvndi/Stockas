@@ -21,26 +21,26 @@ namespace Stockas.Application.Handlers
 
         public async Task<ProductCategoryDto> Handle(CreateProductCategoryCommand request, CancellationToken cancellationToken)
         {
-            // Cek apakah kategori dengan nama yang sama sudah ada
+            // Cek apakah kategori dengan nama yang sama sudah ada untuk user yang sama
             var existingCategory = await _context.ProductCategories
-                .AnyAsync(c => c.CategoryName.ToLower() == request.CategoryName.ToLower(), cancellationToken);
+                .AnyAsync(c => c.CategoryName.ToLower() == request.CategoryName.ToLower() && c.UserId == request.UserId, cancellationToken);
 
             if (existingCategory)
             {
-                throw new ArgumentException("Category name must be unique.");
+                throw new ArgumentException("Category name must be unique for each user.");
             }
 
-            
             var newCategory = new ProductCategory
             {
-                CategoryName = request.CategoryName
+                CategoryName = request.CategoryName,
+                UserId = request.UserId 
             };
 
             _context.ProductCategories.Add(newCategory);
             await _context.SaveChangesAsync(cancellationToken);
 
-           
             return _mapper.Map<ProductCategoryDto>(newCategory);
         }
+
     }
 }
