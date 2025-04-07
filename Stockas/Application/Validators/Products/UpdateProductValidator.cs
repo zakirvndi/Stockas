@@ -14,13 +14,15 @@ public class UpdateProductValidator : AbstractValidator<UpdateProductCommand>
             .MustAsync(async (id, cancellation) =>
                 await _context.Products.AnyAsync(p => p.ProductId == id, cancellation))
             .WithMessage("Product not found.");
-
         RuleFor(x => x.ProductName)
             .NotEmpty()
             .When(x => x.ProductName != null)
             .WithMessage("Product Name cannot be empty.")
-            .MustAsync(async (name, cancellation) =>
-                !(await _context.Products.AnyAsync(p => p.ProductName == name, cancellation)))
+            .MustAsync(async (command, name, cancellation) =>
+                !await _context.Products.AnyAsync(p =>
+                    p.ProductName == name &&
+                    p.ProductId != command.ProductId,
+                    cancellation))
             .When(x => x.ProductName != null)
             .WithMessage("Product Name must be unique.");
 

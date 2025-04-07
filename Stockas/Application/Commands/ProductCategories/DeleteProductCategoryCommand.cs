@@ -8,11 +8,5 @@ namespace Stockas.Application.Commands
         public int CategoryId { get; set; }
         [JsonIgnore]
         public int UserId { get; set; } 
-
-        public DeleteProductCategoryCommand(int categoryId, int userId)
-        {
-            CategoryId = categoryId;
-        }
     }
-
 }

@@ -7,9 +7,5 @@ namespace Stockas.Application.Queries
     {
         public int UserId { get; set; } 
 
-        public GetAllProductCategoriesQuery(int userId)
-        {
-            UserId = userId;
-        }
     }
 }

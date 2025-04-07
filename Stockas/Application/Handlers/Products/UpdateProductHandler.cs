@@ -32,8 +32,13 @@ public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, Produc
         if (request.Quantity.HasValue) product.Quantity = request.Quantity.Value;
         if (request.PurchasePrice.HasValue) product.PurchasePrice = request.PurchasePrice.Value;
         if (request.SellingPrice.HasValue) product.SellingPrice = request.SellingPrice.Value;
+        if (request.CategoryId.HasValue) product.CategoryId = request.CategoryId.Value;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        product = await _context.Products
+        .Include(p => p.Category)
+        .FirstOrDefaultAsync(p => p.ProductId == request.ProductId, cancellationToken);
 
         _logger.LogInformation("Product updated: {ProductId} by user {UserId}", product.ProductId, request.UserId);
 

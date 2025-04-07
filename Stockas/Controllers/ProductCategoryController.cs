@@ -41,7 +41,12 @@ namespace Stockas.Controllers
 
             _logger.LogInformation("Fetching product categories for user {UserId}", userId);
 
-            var categories = await _mediator.Send(new GetAllProductCategoriesQuery(userId));
+            var query = new GetAllProductCategoriesQuery
+            {
+                UserId = userId
+            };
+
+            var categories = await _mediator.Send(query);
 
             if (categories == null || !categories.Any())
             {
@@ -93,7 +98,12 @@ namespace Stockas.Controllers
             if (!TryGetUserId(out int userId))
                 return Unauthorized("Invalid User ID format in token.");
 
-            var command = new DeleteProductCategoryCommand(id, userId);
+            var command = new DeleteProductCategoryCommand
+            {
+                CategoryId = id,
+                UserId = userId
+            };
+
             var result = await _mediator.Send(command);
 
             if (result == Unit.Value)
@@ -102,7 +112,7 @@ namespace Stockas.Controllers
             return Forbid("You do not have permission to delete this category.");
         }
 
-        //method untuk mengambil UserId dari token dan mengonversinya ke int.
+        //method untuk mengambil UserId dari token dan mengonversinya ke int
         private bool TryGetUserId(out int userId)
         {
             userId = 0;

@@ -11,11 +11,6 @@ namespace Stockas.Application.Commands
         public string CategoryName { get; set; }
         [JsonIgnore]
         public int UserId { get; set; } 
-
-        public UpdateProductCategoryCommand(string categoryName, int userId)
-        {
-            CategoryName = categoryName;
-        }
     }
 
 }

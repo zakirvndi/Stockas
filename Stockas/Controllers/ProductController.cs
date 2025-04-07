@@ -49,6 +49,7 @@ namespace Stockas.Controllers
 
             var query = new GetProductsQuery
             {
+                UserId = userId,
                 OrderBy = orderBy,
                 OrderDesc = orderDesc,
                 GroupByCategory = groupByCategory,

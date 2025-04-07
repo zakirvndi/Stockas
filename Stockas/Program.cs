@@ -37,6 +37,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Konfigurasi CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
+
 // Konfigurasi SQL Server & DbContext
 builder.Services.AddEntityFrameworkSqlServer();
 builder.Services.AddDbContextPool<StockasContext>(options =>
@@ -114,16 +128,19 @@ app.UseMiddleware<TokenBlacklistMiddleware>();
 // Middleware Global Error Handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stockas API V1");
         c.RoutePrefix = string.Empty; 
     });
 //}
+
+app.UseCors("AllowFrontend");
 
 // Middleware Authentication & Authorization
 app.UseAuthentication();
